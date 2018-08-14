@@ -17,7 +17,7 @@ import ProviderConsumer from './ProviderConsumer'
 
 export interface IProviderProps {
   fontFaces?: FontFaces
-  theme: IThemeInput
+  theme?: IThemeInput
   staticStyles?: StaticStyles
   children: React.ReactNode
 }
