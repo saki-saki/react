@@ -78,9 +78,19 @@ export interface ICSSInJSStyle extends React.CSSProperties {
   '-moz-osx-font-smoothing'?: CSSType.Globals | 'auto' | 'grayscale'
 }
 
+type TComponentPart = {
+  [part: string]: string
+}
+
+type TComponentPart = 'root' | string
+
+type TComponentAnatomy = {
+  [part: TComponentPart]: string
+}
+
 export interface ComponentStyleFunctionParam {
   props: IProps
-  variables: ComponentVariablesObject
+  variables: ComponentVariablesObjectcomponentPartClasses
 }
 
 export type ComponentPartStyleFunction =
