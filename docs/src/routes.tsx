@@ -17,13 +17,20 @@ const Router = () => (
         <DocsLayout exact path="/" component={Introduction} />
         <DocsLayout exact path="/:type/:name" component={DocsRoot} sidebar />
         <DocsLayout exact path="/quick-start" component={QuickStart} />
-        {process.env.NODE_ENV !== 'production' && (
+        {process.env.NODE_ENV !== 'production' && [
           <DocsLayout
             exact
+            key="/prototype-chat-pane"
             path="/prototype-chat-pane"
             component={require('./prototypes/ChatPane').default}
-          />
-        )}
+          />,
+          <DocsLayout
+            exact
+            key="/prototype-button-theme"
+            path="/prototype-button-theme"
+            component={require('./prototypes/ButtonTheme').default}
+          />,
+        ]}
         <DocsLayout exact path="/*" component={PageNotFound} />
       </Switch>
     </Switch>
