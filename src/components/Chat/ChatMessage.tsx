@@ -32,7 +32,6 @@ export interface IChatMessageProps {
   accessibility?: Accessibility
   as?: any
   author?: ShorthandValue
-  avatar?: ShorthandValue
   children?: ReactChildren
   className?: string
   content?: any

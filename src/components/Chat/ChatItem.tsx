@@ -10,10 +10,16 @@ import {
 } from '../../lib'
 import Slot from '../Slot/Slot'
 import { ComponentPartStyle, ComponentVariablesInput } from '../../../types/theme'
-import { Extendable, ReactChildren, ShorthandRenderFunction } from '../../../types/utils'
+import {
+  Extendable,
+  ReactChildren,
+  ShorthandRenderFunction,
+  ShorthandValue,
+} from '../../../types/utils'
 
 export interface IChatItemProps {
   as?: any
+  avatar?: ShorthandValue
   content?: React.ReactNode
   children?: ReactChildren
   className?: string
