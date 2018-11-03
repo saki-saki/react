@@ -10,7 +10,7 @@ import { Provider, themes } from '@stardust-ui/react'
 
 import { examplePathToHash, getFormattedHash, knobsContext, scrollToAnchor } from 'docs/src/utils'
 import evalTypeScript from 'docs/src/utils/evalTypeScript'
-import { callable, doesNodeContainClick, pxToRem, constants } from 'src/lib'
+import { constants, doesNodeContainClick, mergeThemes, pxToRem } from 'src/lib'
 import Editor, { EDITOR_BACKGROUND_COLOR, EDITOR_GUTTER_COLOR } from 'docs/src/components/Editor'
 import ComponentControls from '../ComponentControls'
 import ComponentExampleTitle from './ComponentExampleTitle'
@@ -359,17 +359,51 @@ class ComponentExample extends React.Component<ComponentExampleProps, ComponentE
 
   private renderWithProvider(ExampleComponent) {
     const { showRtl, componentVariables, themeName } = this.state
-    const theme = themes[themeName]
+    const selectedTheme = themes[themeName]
+    const displayName = this.getDisplayName()
 
-    const newTheme: ThemeInput = {
-      componentVariables: mergeThemeVariables(theme.componentVariables, {
-        [this.getDisplayName()]: componentVariables,
-      }),
+    const mergedTheme: ThemeInput = mergeThemes(selectedTheme, {
+      componentVariables: {
+        [displayName]: componentVariables,
+      },
       rtl: showRtl,
-    }
+    })
+
+    // convert variables to observable object
+    const variableFunc = mergedTheme.componentVariables[displayName]
+    const variablesObj = variableFunc(mergedTheme.siteVariables, {})
+
+    mergedTheme.componentVariables[displayName] = Object.keys(variablesObj).reduce((acc, key) => {
+      const value = variablesObj[key]
+      const privateKey = `__${key}__`
+
+      Object.defineProperty(acc, privateKey, {
+        value,
+        enumerable: false,
+        writable: true,
+        configurable: false,
+      })
+
+      Object.defineProperty(acc, key, {
+        get() {
+          console.log('GETTING:', key)
+          return acc[privateKey]
+        },
+        set(value) {
+          console.log('SETTING:', key)
+          acc[privateKey] = value
+          return acc[privateKey]
+        },
+      })
+
+      return acc
+    }, {})
+
+    console.log(displayName, mergedTheme.componentVariables[displayName])
+    // window.vars = mergedTheme.componentVariables[displayName]
 
     return (
-      <Provider theme={newTheme}>
+      <Provider theme={mergedTheme}>
         <ExampleComponent knobs={this.getKnobsValue()} />
       </Provider>
     )
@@ -568,7 +602,7 @@ class ComponentExample extends React.Component<ComponentExampleProps, ComponentE
               )
             }
 
-            const variablesObject = callable(variables)(siteVariables)
+            const variablesObject = variables(siteVariables)
 
             return (
               <Form inverted widths="equal" style={{ padding: '1rem' }}>

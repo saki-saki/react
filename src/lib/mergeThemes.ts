@@ -58,24 +58,11 @@ export const mergeComponentVariables = (
   target: ComponentVariablesInput,
   ...sources: ComponentVariablesInput[]
 ): ComponentVariablesPrepared => {
-  const initial = (...args) => callable(target)(...args) || {}
+  const initial = siteVariables => _.merge(reference, callable(target)(siteVariables))
 
   return sources.reduce<ComponentVariablesPrepared>((acc, next) => {
-    return (...args) => {
-      const accumulatedVariables = acc(...args)
-      const computedComponentVariables = callable(next)(...args)
-
-      const mergedVariables = {}
-      _.mapKeys(computedComponentVariables, (variableToMerge, variableName) => {
-        const accumulatedVariable = accumulatedVariables[variableName]
-
-        mergedVariables[variableName] =
-          _.isObject(variableToMerge) && _.isObject(accumulatedVariable)
-            ? { ...accumulatedVariable, ...variableToMerge }
-            : variableToMerge
-      })
-
-      return { ...accumulatedVariables, ...mergedVariables }
+    return siteVariables => {
+      return _.merge(acc(siteVariables), callable(next)(siteVariables))
     }
   }, initial)
 }
