@@ -31,6 +31,12 @@ const Router = () => (
           />,
           <DocsLayout
             exact
+            key="/prototype-control-message"
+            path="/prototype-control-message"
+            component={require('./prototypes/controlMessages/index').default}
+          />,
+          <DocsLayout
+            exact
             key="/prototype-async-shorthand"
             path="/prototype-async-shorthand"
             component={require('./prototypes/AsyncShorthand/index').default}
