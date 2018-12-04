@@ -7,11 +7,13 @@ export default {
     display: 'inline-block',
     verticalAlign: 'middle',
     width: (props.fluid && '100%') || variables.width,
-    height: variables.height || 'auto',
+    height: variables.height,
     ...(props.circular && { borderRadius: pxToRem(9999) }),
     ...(props.avatar && {
-      width: (props.fluid && '100%') || variables.avatarSize,
+      width: variables.avatarSize,
+      height: variables.avatarSize,
       borderRadius: variables.avatarRadius,
     }),
+    ...(props.fluid && { width: '100%' }),
   }),
 } as ComponentSlotStylesInput<ImageProps, any>

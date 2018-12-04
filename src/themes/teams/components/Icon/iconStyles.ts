@@ -85,6 +85,7 @@ const iconStyles: ComponentSlotStylesInput<IconProps, any> = {
     const isFontBased = !iconSpec || !iconSpec.isSvg
 
     return {
+      padding: '10rem',
       backgroundColor: v.backgroundColor,
       display: 'inline-block',
       margin: v.margin,

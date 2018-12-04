@@ -13,12 +13,12 @@ const layoutStyles: ComponentSlotStylesInput = {
       alignItems,
       debug,
       gap,
+      inline,
       justifyItems,
       main,
       mainSize,
       end,
       endSize,
-      rootCSS,
       start,
       startSize,
       vertical,
@@ -28,22 +28,20 @@ const layoutStyles: ComponentSlotStylesInput = {
       ...(debug && debugRoot()),
       justifyItems,
       alignItems,
-      display: 'grid',
-      [vertical ? 'gridTemplateRows' : 'gridTemplateColumns']: [
-        // Heads up!
-        // IE11 Doesn't support grid-gap, insert virtual columns instead
-        start && startSize,
-        gap && start && main && gap,
-        main && mainSize,
-        gap && (start || main) && end && gap,
-        end && endSize,
-      ]
-        .filter(Boolean)
-        .join(' '),
-      ...(vertical && {
-        gridAutoFlow: 'row',
-      }),
-      ...rootCSS,
+      display: inline ? 'inline-flex' : 'flex',
+      justifyContent: 'center',
+      flexDirection: vertical ? 'column' : 'row',
+      // [vertical ? 'gridTemplateRows' : 'gridTemplateColumns']: [
+      //   // Heads up!
+      //   // IE11 Doesn't support grid-gap, insert virtual columns instead
+      //   start && startSize,
+      //   gap && start && main && gap,
+      //   main && mainSize,
+      //   gap && (start || main) && end && gap,
+      //   end && endSize,
+      // ]
+      //   .filter(Boolean)
+      //   .join(' '),
     }
   },
 
@@ -54,7 +52,6 @@ const layoutStyles: ComponentSlotStylesInput = {
   start: ({ props }): ICSSInJSStyle => ({
     ...(props.debug && debugArea()),
     ...(props.truncateStart && truncateStyle),
-    display: 'inline-flex',
     alignItems: 'center',
     ...props.startCSS,
   }),
@@ -68,8 +65,8 @@ const layoutStyles: ComponentSlotStylesInput = {
   end: ({ props }): ICSSInJSStyle => ({
     ...(props.debug && debugArea()),
     ...(props.truncateEnd && truncateStyle),
-    display: 'inline-flex',
     alignItems: 'center',
+    padding: props.endPadded ? '0.5rem' : undefined,
     ...props.endCSS,
   }),
 }

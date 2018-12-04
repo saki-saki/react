@@ -5,7 +5,6 @@ import {
   childrenExist,
   createShorthandFactory,
   customPropTypes,
-  pxToRem,
   UIComponent,
   UIComponentProps,
   ChildrenComponentProps,
@@ -13,7 +12,7 @@ import {
   commonPropTypes,
 } from '../../lib'
 
-import { Icon, Image, Layout } from '../..'
+import { Icon, Image, Layout, Text } from '../..'
 import { Accessibility } from '../../lib/accessibility/types'
 import { Extendable, ShorthandValue } from '../../../types/utils'
 
@@ -80,27 +79,30 @@ class Label extends UIComponent<Extendable<LabelProps>, any> {
   renderComponent({ ElementType, classes, rest, variables, styles }) {
     const { children, content, icon, iconPosition, image, imagePosition } = this.props
 
-    const imageElement =
-      image &&
-      Image.create(image, {
-        defaultProps: {
-          styles: styles.image,
-          variables: variables.image,
-        },
-      })
+    const imageElement = Image.create(image, {
+      defaultProps: {
+        styles: styles.image,
+        variables: variables.image,
+      },
+    })
 
-    const iconElement =
-      icon &&
-      Icon.create(icon, {
-        defaultProps: {
-          styles: styles.icon,
-          variables: variables.icon,
-        },
-        overrideProps: this.handleIconOverrides,
-      })
+    const iconElement = Icon.create(icon, {
+      defaultProps: {
+        styles: styles.icon,
+        variables: variables.icon,
+      },
+      overrideProps: this.handleIconOverrides,
+    })
+
+    const contentElement = Text.create(content, {
+      defaultProps: {
+        styles: styles.content,
+        variables: variables.content,
+      },
+    })
 
     let start: React.ReactNode = null
-    let end: React.ReactNode = null
+    let end: any = null
 
     // Default positioning of the image and icon
     if (image && imagePosition === 'start') {
@@ -136,14 +138,35 @@ class Label extends UIComponent<Extendable<LabelProps>, any> {
       }
     }
 
+    // if (childrenExist(children)) {
+    //   return (
+    //     <ElementType {...rest} className={classes.root}>
+    //       {children}
+    //     </ElementType>
+    //   )
+    // }
+
+    // return (
+    //   <ElementType {...rest} className={classes.root}>
+    //     {start}
+    //     {contentElement}
+    //     {end}
+    //   </ElementType>
+    // )
+
     return (
-      <ElementType {...rest} className={classes.root}>
-        {childrenExist(children) ? (
-          children
-        ) : (
-          <Layout main={content} start={start} end={end} gap={pxToRem(3)} />
-        )}
-      </ElementType>
+      <Layout
+        as={ElementType}
+        debug
+        inline
+        endPadded
+        wrap={false}
+        className={classes.root}
+        start={start}
+        main={content}
+        end={end}
+        {...rest}
+      />
     )
   }
 }

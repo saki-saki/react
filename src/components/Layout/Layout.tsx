@@ -37,6 +37,8 @@ export interface LayoutProps extends UIComponentProps {
   truncateMain?: boolean
   truncateEnd?: boolean
   vertical?: boolean
+  wrap?: boolean
+  endPadded?: boolean
 }
 
 /**
@@ -78,6 +80,8 @@ class Layout extends UIComponent<Extendable<LayoutProps>, any> {
     alignItems: PropTypes.any,
 
     gap: PropTypes.string,
+    wrap: PropTypes.bool,
+    inline: PropTypes.bool,
     reducing: PropTypes.bool,
     disappearing: PropTypes.bool,
 
@@ -91,20 +95,24 @@ class Layout extends UIComponent<Extendable<LayoutProps>, any> {
   static defaultProps = {
     startSize: 'auto',
     mainSize: '1fr',
+    alignItems: 'center',
     endSize: 'auto',
+    wrap: true,
+    inline: false,
 
     // TODO: when an area is another Layout, do not wrap them in an extra div
     // TODO: option 1) higher value layouts could use start={Layout.create(start)} to ensure Areas are layout root
-    renderStartArea({ start, classes }) {
-      return start && <div className={cx('ui-layout__start', classes.start)}>{start}</div>
+    renderStartArea({ start, classes, wrap }) {
+      return start && (!wrap ? start : <div className={cx('ui-layout__start', classes.start)}>{start}</div>)
     },
 
-    renderMainArea({ main, classes }) {
-      return main && <div className={cx('ui-layout__main', classes.main)}>{main}</div>
+    renderMainArea({ main, classes, wrap }) {
+      return main && (!wrap ? main : <div className={cx('ui-layout__main', classes.main)}>{main}</div>)
     },
 
-    renderEndArea({ end, classes }) {
-      return end && <div className={cx('ui-layout__end', classes.end)}>{end}</div>
+    renderEndArea({ end, classes, styles, wrap }) {
+      const endClasses = cx('ui-layout__end', classes.end)
+      return end && (!wrap ? React.cloneElement(end, { className: 'ui-layout__end', styles: styles.end }) : <div className={endClasses}>{end}</div>)
     },
 
     // Heads up!
@@ -114,7 +122,7 @@ class Layout extends UIComponent<Extendable<LayoutProps>, any> {
     },
   }
 
-  renderComponent({ ElementType, classes, rest }) {
+  renderComponent({ ElementType, classes, styles, rest }) {
     const {
       reducing,
       disappearing,
@@ -127,9 +135,9 @@ class Layout extends UIComponent<Extendable<LayoutProps>, any> {
       renderGap,
     } = this.props as LayoutPropsWithDefaults
 
-    const startArea = renderStartArea({ ...this.props, classes })
-    const mainArea = renderMainArea({ ...this.props, classes })
-    const endArea = renderEndArea({ ...this.props, classes })
+    const startArea = renderStartArea({ ...this.props, styles, classes })
+    const mainArea = renderMainArea({ ...this.props, styles, classes })
+    const endArea = renderEndArea({ ...this.props, styles, classes })
 
     if (!startArea && !mainArea && !endArea) {
       return <ElementType {...rest} className={classes.root} />
