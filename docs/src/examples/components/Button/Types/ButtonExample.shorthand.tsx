@@ -1,10 +1,27 @@
 import React from 'react'
-import { Button } from '@stardust-ui/react'
+import { Button, _S } from '@stardust-ui/react'
 
 const ButtonExample = () => (
   <div>
-    <Button content="Click here" />
-    <Button content="See how this very long text shows up on the button" />
+    <Button icon="checkmark" /> {/* Primitive */}
+    <Button icon={{ name: 'checkmark', color: 'red' }} /> {/* Props */}
+    {/* Function! */}
+    <Button
+      icon={_S('checkmark', (Component, props) => (
+        <>
+          <Component {...props} />
+          <span>Custom element!</span>
+        </>
+      ))}
+    />
+    <Button
+      icon={_S({ name: 'checkmark' }, (Component, props) => (
+        <>
+          <Component {...props} />
+          <span>Custom element!</span>
+        </>
+      ))}
+    />
   </div>
 )
 

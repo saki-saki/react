@@ -7,6 +7,7 @@ import {
   ShorthandRenderCallback,
   ShorthandRenderFunction,
   ShorthandRenderer,
+  ShorthandFunction,
 } from '../../types/utils'
 import { mergeStyles } from './mergeThemes'
 
@@ -40,6 +41,13 @@ const mappedProps: { [key in HTMLTag]: ShorthandProp } = {
   img: 'src',
   input: 'type',
 }
+
+export const _S: ShorthandFunction = (value, render) => ({
+  // Here we will add some checks for DEV mode
+  internalFlag: true,
+  render,
+  value,
+})
 
 // ============================================================
 // Factories
@@ -107,6 +115,11 @@ function createShorthandFromValue(
 
   const valIsPrimitive = typeof value === 'string' || typeof value === 'number'
   const valIsPropsObject = _.isPlainObject(value)
+  // @ts-ignore temporary ignore
+  const valIsShorthandFunction = valIsPropsObject && value.internalFlag === true
+  const valIsShorthandFunctionPrimitive =
+    // @ts-ignore temporary ignore
+    valIsShorthandFunction && (typeof value.value === 'string' || typeof value.value === 'number')
   const valIsReactElement = React.isValidElement(value)
 
   // unhandled type warning
@@ -134,6 +147,8 @@ function createShorthandFromValue(
   // User's props
   const usersProps =
     (valIsReactElement && (value as React.ReactElement<Props>).props) ||
+    // @ts-ignore temporary ignore
+    (valIsShorthandFunction && !valIsShorthandFunctionPrimitive && (value.value as Props)) ||
     (valIsPropsObject && (value as Props)) ||
     {}
 
@@ -150,6 +165,11 @@ function createShorthandFromValue(
   // Map prop for primitive value
   if (valIsPrimitive) {
     props[mappedProps[overrideProps.as || defaultProps.as] || mappedProp || 'children'] = value
+  }
+  if (valIsShorthandFunctionPrimitive) {
+    props[mappedProps[overrideProps.as || defaultProps.as] || mappedProp || 'children'] =
+      // @ts-ignore
+      value.value
   }
 
   // Merge className
@@ -189,6 +209,11 @@ function createShorthandFromValue(
   const { render } = options
   if (render) {
     return render(Component, props)
+  }
+
+  if (valIsShorthandFunction) {
+    // @ts-ignore temporary ignore
+    return value.render(Component, props)
   }
 
   // Clone ReactElements

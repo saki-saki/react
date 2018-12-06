@@ -42,4 +42,15 @@ export type ShorthandRenderer = (
 
 export type ShorthandRenderCallback = (render: ShorthandRenderer) => React.ReactElement<any>
 
-export type ShorthandValue = React.ReactNode | Props
+export type ShorthandInternalObject = {
+  internalFlag: true // Will be Symbol
+  render: ShorthandRenderFunction
+  value: Props | string | number
+}
+
+export type ShorthandFunction = (
+  value: Props | string | number,
+  render: ShorthandRenderFunction,
+) => ShorthandInternalObject
+
+export type ShorthandValue = React.ReactNode | Props | ShorthandFunction | ShorthandRenderCallback
