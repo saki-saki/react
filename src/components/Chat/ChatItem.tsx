@@ -60,7 +60,8 @@ class ChatItem extends UIComponent<Extendable<ChatItemProps>, any> {
 
   private renderChatItem() {
     const { content, gutter, gutterPosition } = this.props
-    const gutterElement = gutter && ChatGutter.create(gutter)
+    const gutterElement =
+      gutter && ChatGutter.create(gutter, { defaultProps: { position: gutterPosition } })
 
     return (
       <>

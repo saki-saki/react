@@ -4,6 +4,10 @@ import { ChatMessageVariables } from './chatMessageVariables'
 
 const chatMessageStyles: ComponentSlotStylesInput<ChatMessageProps, ChatMessageVariables> = {
   root: ({ props: p, variables: v }): ICSSInJSStyle => ({
+    position: 'relative',
+    marginLeft: v.message.margin,
+    marginRight: v.message.margin,
+
     display: 'inline-block',
     padding: v.message.padding,
     borderRadius: v.message.borderRadius,
