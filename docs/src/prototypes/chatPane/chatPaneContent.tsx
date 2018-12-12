@@ -53,16 +53,18 @@ class ChatPaneContainer extends React.PureComponent<ChatPaneContainerProps> {
             key={`chat-item-${index}`}
             gutterPosition={mine ? 'end' : 'start'}
             gutter={gutter && { content: <Avatar {...gutter} /> }}
-            content={
-              <>
-                {itemType === ChatItemTypes.message && (
-                  <div style={screenReaderMessageContainerStyles} role="heading" aria-level={4}>
-                    {this.getMessagePreviewForScreenReader(props)}
-                  </div>
-                )}
-                <ElementType {...props} text={undefined} {...maybeAttributesForDivider} />
-              </>
-            }
+            content={{
+              content: (
+                <>
+                  {itemType === ChatItemTypes.message && (
+                    <div style={screenReaderMessageContainerStyles} role="heading" aria-level={4}>
+                      {this.getMessagePreviewForScreenReader(props)}
+                    </div>
+                  )}
+                  <ElementType {...props} text={undefined} {...maybeAttributesForDivider} />
+                </>
+              ),
+            }}
           />
         )
       },

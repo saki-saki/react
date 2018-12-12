@@ -14,7 +14,7 @@ import {
   customPropTypes,
 } from '../../lib'
 import Slot from '../Slot/Slot'
-import ChatGutter from './ChatGutter'
+import { ComponentSlotStylesPrepared } from '../../themes/types'
 
 export interface ChatItemProps
   extends UIComponentProps,
@@ -48,24 +48,24 @@ class ChatItem extends UIComponent<Extendable<ChatItemProps>, any> {
     gutterPosition: 'start',
   }
 
-  renderComponent({ ElementType, classes, rest }: RenderResultConfig<ChatItemProps>) {
+  renderComponent({ ElementType, classes, rest, styles }: RenderResultConfig<ChatItemProps>) {
     const { children } = this.props
 
     return (
       <ElementType {...rest} className={classes.root}>
-        {childrenExist(children) ? children : this.renderChatItem()}
+        {childrenExist(children) ? children : this.renderChatItem(styles)}
       </ElementType>
     )
   }
 
-  private renderChatItem() {
+  private renderChatItem(styles: ComponentSlotStylesPrepared) {
     const { content, gutter, gutterPosition } = this.props
-    const gutterElement = gutter && ChatGutter.create(gutter)
+    const gutterElement = gutter && Slot.create(gutter, { defaultProps: { styles: styles.gutter } })
 
     return (
       <>
         {gutterPosition === 'start' && gutterElement}
-        {Slot.create(content)}
+        {Slot.create(content, { defaultProps: { styles: styles.content } })}
         {gutterPosition === 'end' && gutterElement}
       </>
     )

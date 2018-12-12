@@ -13,21 +13,19 @@ const ChatExampleGutterPosition = () => (
   <Chat>
     <Chat.Item
       gutterPosition="start"
-      gutter={
-        <Chat.Gutter>
-          <Avatar {...johnAvatar} />
-        </Chat.Gutter>
-      }
-      content={<Chat.Message content="Hello" author="John Doe" timestamp="Yesterday, 10:15 PM" />}
+      gutter={{ content: <Avatar {...johnAvatar} /> }}
+      content={{
+        content: <Chat.Message content="Hello" author="John Doe" timestamp="Yesterday, 10:15 PM" />,
+      }}
     />
     <Chat.Item
       gutterPosition="end"
-      gutter={
-        <Chat.Gutter>
-          <Avatar {...janeAvatar} />
-        </Chat.Gutter>
-      }
-      content={<Chat.Message content="Hi" author="Jane Doe" timestamp="Yesterday, 10:15 PM" mine />}
+      gutter={{ content: <Avatar {...janeAvatar} /> }}
+      content={{
+        content: (
+          <Chat.Message content="Hi" author="Jane Doe" timestamp="Yesterday, 10:15 PM" mine />
+        ),
+      }}
     />
   </Chat>
 )
