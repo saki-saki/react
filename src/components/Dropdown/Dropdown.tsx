@@ -671,7 +671,6 @@ export default class Dropdown extends AutoControlledComponent<
           selectItemAtIndex(highlightedIndex)
         }
         return
-      case keyboardKey.Enter:
       case keyboardKey.Escape:
         accessibilityInputPropsKeyDown(e)
         this.buttonNode.focus()
@@ -683,7 +682,7 @@ export default class Dropdown extends AutoControlledComponent<
   }
 
   private handleSelectedChange = (item: ShorthandValue) => {
-    const { multiple, getA11ySelectionMessage } = this.props
+    const { multiple, getA11ySelectionMessage, search } = this.props
     const newValue = multiple ? [...(this.state.value as ShorthandValue[]), item] : item
 
     this.trySetState({
@@ -692,6 +691,9 @@ export default class Dropdown extends AutoControlledComponent<
     })
     if (getA11ySelectionMessage && getA11ySelectionMessage.onAdd) {
       this.setA11yStatus(getA11ySelectionMessage.onAdd(item))
+    }
+    if (!search) {
+      this.buttonNode.focus()
     }
 
     // we don't have event for it, but want to keep the event handling interface, event is empty.
