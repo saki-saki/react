@@ -53,23 +53,21 @@ const getFocusedStyles = ({
   const { primary, underlined, iconOnly, isFromKeyboard, active } = props
   if (active && !underlined) return {}
 
-  const { color, background } =
-    (underlined && !isFromKeyboard) || iconOnly
-      ? {
-          color: colorVariable,
-          background: v.backgroundColor,
-        }
-      : primary
-      ? {
-          color: v.primaryFocusedColor,
-          background: v.primaryFocusedBackgroundColor,
-        }
-      : {
-          color: colorVariable,
-          background: v.focusedBackgroundColor,
-        }
-
-  return { color: getColor('foreground', color), background: getColor('hover', background) }
+  return (underlined && !isFromKeyboard) || iconOnly
+    ? {
+        color: colorVariable,
+        background: v.backgroundColor,
+      }
+    : {
+        color: getColor(
+          'foreground',
+          primary ? v.primaryFocusedColor : v.primaryFocusedBackgroundColor,
+        ),
+        background: getColor(
+          'hover',
+          primary ? v.primaryFocusedBackgroundColor : v.focusedBackgroundColor,
+        ),
+      }
 }
 
 const itemSeparator: ComponentSlotStyleFunction<MenuItemPropsAndState, MenuVariables> = ({
@@ -89,7 +87,7 @@ const itemSeparator: ComponentSlotStyleFunction<MenuItemPropsAndState, MenuVaria
         content: '""',
         top: 0,
         right: 0,
-        backgroundColor: getColor('background', primary ? v.primaryBorderColor : v.borderColor),
+        background: getColor('background', primary ? v.primaryBorderColor : v.borderColor),
         ...(vertical ? { width: '100%', height: '1px' } : { width: '1px', height: '100%' }),
       },
     }
